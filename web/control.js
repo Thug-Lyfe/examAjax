@@ -7,8 +7,9 @@ for (var i = 0; i<es.length;i++)(function(i){
         es[i].onclick = function() {
         
         var xhttp = new XMLHttpRequest();
-        $.ajax({url: "http://restcountries.eu/rest/v1/alpha?codes=" + id, success: function(result){
-                //"api/generic/city/"+id
+        $.ajax({url: "api/generic/city/"+id, success: function(result){
+                //non proxy selution link
+                //"http://restcountries.eu/rest/v1/alpha?codes=" + id
                 if(formerId !== ""){
                     $("#"+formerId).css("fill","c0c0c0");
                 }

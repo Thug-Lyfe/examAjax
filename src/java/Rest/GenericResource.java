@@ -10,15 +10,13 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
@@ -33,34 +31,30 @@ public class GenericResource {
 
     @Context
     private UriInfo context;
-
+    private Gson gson;
     /**
      * Creates a new instance of GenericResource
      */
     public GenericResource() {
         gson = new GsonBuilder().setPrettyPrinting().create();
     }
-    private Gson gson;
-
- 
+    
+    //proxy rest call
+    @GET
     @Path("/city/{id}")
     @Produces("application/json")
     public String getcountry(@PathParam("id") String id) throws MalformedURLException, IOException {
         URL url = new URL("http://restcountries.eu/rest/v1/alpha?codes=" + id);
         String jsonStr = null;
-        try {
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("Accept", "application/json;charset=UTF-8");
-            Scanner scan = new Scanner(con.getInputStream());
-            if (scan.hasNext()) {
-                jsonStr = scan.nextLine();
-            }
-            scan.close();
-        } catch (ProtocolException ex) {
-            Logger.getLogger(GenericResource.class.getName()).log(Level.SEVERE, null, ex);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Accept", "application/json;charset=UTF-8");
+        Scanner scan = new Scanner(con.getInputStream());
+        if (scan.hasNext()) {
+            jsonStr = scan.nextLine();
         }
-        return gson.toJson(jsonStr);
+        scan.close();
+        return jsonStr;
     }
 
     /**
